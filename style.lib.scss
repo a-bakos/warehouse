@@ -1,0 +1,166 @@
+/* ----------------------------------------------------------------------------
+
+CSS + SCSS
+REUSABLE STYLE COMPONENTS LIBRARY
+
+# Table of contents:
+
+#CHARSET    + UTF-8 charset             
+#BOBOX      + box-sizing
+#FFACE      + including font-face
+#MIXINS     + predefined mixins
+#GRADBG         ++ Gradient background solutions
+#GRADBG3            +++ 3 steps
+#GRADBG3INV         +++ 3 steps inverse
+#GRADBG5            +++ 5 steps
+#PLOAD      + simple fade-in page load effect
+#3DFONT     + faking 3D fonts
+#MSELECT    + mouse selection
+#SCROLLB    + scroll bar styling
+
+---------------------------------------------------------------------------- */
+
+/*--------->
+    #CHARSET
+    UTF-8 character encoding
+*/
+
+@charset "UTF-8";
+
+/*--------->
+    #FFACE
+    Including a font in the stylesheet
+*/
+
+@font-face {
+    font-family: 'example';
+    src: url('fonts/example.ttf');
+    }
+
+/*--------->
+    #BOBOX
+    Box-sizing
+    border-box = width: sum(container + padding + border width)
+	Normally, the box model considers the width you set to be equal
+	to the width of the container + the width of the padding +
+	the width of border. With box-sizing: border-box, when you set a width,
+	it's the width of the overall element and not the width of the content box
+*/
+
+*,
+*:before,
+*:after { box-sizing: border-box; }
+
+/*   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *
+    #MIXINS
+    Pre-defined mixins
+*   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   */
+
+/*--------->
+    #GRADBG
+    Gradient background solutions
+    set: color, percent
+*/
+
+// #GRABG-3 // 3 steps
+@mixin grad-bg-right-3step($col, $pc) {
+    background-image: linear-gradient(
+        to right,
+        darken($col, $pc),
+        $col,
+        darken($col, $pc));
+    }
+    // to call it, use:
+    @include grad-bg-right-3step($col, $pc);
+
+// #GRADBG3INV // 3 steps inverse
+@mixin grad-bg-right-3step-inverse($col, $pc) {
+    background-image: linear-gradient(
+        to right,
+        $col,
+        darken($col, $pc),
+        $col);
+    }
+    // to call it, use:
+    @include grad-bg-right-3step-inverse($col, $pc);
+
+// #GRADBG5 // 5 steps
+@mixin grad-bg-right-5step($col, $pc) {
+    background-image: linear-gradient(
+        to right,
+        darken($col, $pc),
+        $col,
+        lighten($col, $pc),
+        $col,
+        darken($col, $pc));
+    }
+    // to call it, use:
+    @include grad-bg-right-5step($col, $pc);
+
+/*--------->
+    #PLOAD
+    Fade-in page load effect
+    apply it to body selector for universal effect, and set duration to eg .3s
+*/
+
+@mixin pageload {
+    0% { opacity: .5; }
+    100% { opacity: 1; }
+    }
+
+    // to call it, use this in the (body) declaration block:
+    -webkit-animation: loadUp ($duration);
+            animation: loadUp ($duration);
+
+    @-webkit-keyframes loadUp { @include pageload; }
+            @keyframes loadUp { @include pageload; }
+
+/*--------->
+    #3DFONT
+    Faking 3D font effect
+*/
+
+text-shadow:
+    // 3D effect:
+    1px 1px 0 $color,
+    2px 2px 0 darken($color, 10%),
+    3px 3px 0 darken($color, 15%),
+    // Glow:
+    0 0 10px $glowshadow;
+
+/*--------->
+    #MSELECT
+    mouse selection
+*/
+
+::selection {
+    background: $color;
+    color: white;
+    }
+
+::-moz-selection {
+    background: $color;
+    color: white;
+    }
+
+/*--------->
+    #SCROLLB
+    scroll bar styling
+*/
+
+::-webkit-scrollbar { width: 13px; }
+
+::-webkit-scrollbar-track {
+    background: $color;
+    box-shadow: 0 0 2px $color inset;
+    }
+
+::-webkit-scrollbar-thumb {
+    background: $color;
+    border-radius: 3px;
+    box-shadow:
+        0 0 3px $color,
+        0 0 3px $color inset;
+    }
+
+::-webkit-scrollbar-thumb:hover { background: $color; }
