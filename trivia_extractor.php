@@ -10,15 +10,20 @@
     and the script extracts all of the trivia from the url's source code and stores them in an array.
     Also, searches for the title of the page (a movie title or a person's name).
     Checks if the value found is Twitter-friendly or not, and if so, it posts the title and the trivia
-    to Twitter. If it is more than 140 character combined, the script gets reloaded and starts again.
-    
+    to Twitter. If it is more than 140 character all together, the script gets reloaded and starts again.
+
     Created by Attila Bakos (abakos.info)
     2016, Plymouth, UK
 */
 
+    # Page reload function
+    function reload($delay = 1) {
+        $site_url = $_SERVER['REQUEST_URI'];
+        header("Refresh: " . $delay . "; URL=$site_url");
+    }
+
     # Refresh the page with randomized timegaps (defined in seconds)
-    $site_url = $_SERVER['REQUEST_URI'];
-    header("Refresh: " . mt_rand(600,1800) . "; URL=$site_url"); # currently: 10-30mins
+    reload(mt_rand(600,1800)); # currently: 10-30mins
 
     # Load and connect to Twitter API using TwitterOAuth - https://twitteroauth.com/
     require "twitteroauth/autoload.php";
@@ -26,19 +31,19 @@
     $connection = new TwitterOAuth("CONSUMER_KEY", "CONSUMER_SECRET", "access_token", "access_token_secret");
 
     # Load the files into an array for further processing
-    $trivia_files = array();
-        $trivia_files[0] = 'names.txt';
-        $trivia_files[1] = 'movies.txt';
+    $files = array();
+        $files[0] = 'names.txt';
+        $files[1] = 'movies.txt';
 
     # Get random a file from the array
-    $random_trivia_file = $trivia_files[array_rand($trivia_files)];
+    $random_trivia_file = $files[array_rand($files)];
 
     # Check which file is used
-    if ($random_trivia_file == $trivia_files[0]) {
-        $random_trivia_file = file_get_contents($trivia_files[0]);
+    if ($random_trivia_file == $files[0]) {
+        $random_trivia_file = file_get_contents($files[0]);
     }
     else {
-        $random_trivia_file = file_get_contents($trivia_files[1]);
+        $random_trivia_file = file_get_contents($files[1]);
     }
 
     # Create another array by exploding the random file at new lines
@@ -66,17 +71,40 @@
     # i => case-insensitive search
     # U => non-greedy match
 
+    # Booleans for later conditional printing
+    $is_movie = FALSE;
+    $is_human = FALSE;
+
     # If starts with 'nm...' complete the name/bio link
     if (preg_match('!nm.*!', $random_item, $random_name)) {
         $build_url = file_get_contents("http://www.imdb.com/name/$random_name[0]/bio");
-        $ext = preg_match_all('!(?<=(odd">)|(even">)).*(?=<br />)!siU', $build_url, $matches);
-        echo "<h2>Random trivia from actors:</h2>";
+        preg_match_all('!(?<=(odd">)|(even">)).*(?=<br />)!siU', $build_url, $matches);
+        $is_human = TRUE;
     }
     # Otherwise complete the link to the movie's trivia
     else {
         $build_url = file_get_contents("http://www.imdb.com/title/$random_item/trivia");
-        $ext = preg_match_all('!(?<=sodatext">).*(?=  </div>)!siU', $build_url, $matches);
-        echo "<h2>Random trivia from movies:</h2>";
+        preg_match_all('!(?<=sodatext">).*(?=  </div>)!siU', $build_url, $matches);
+        $is_movie = TRUE;
+    }
+
+    # Count the matches 
+    $match_count = count($matches[0]);
+
+    # If no trivia has been found record the ID in a file and refresh the script
+    $no_value = 'no_trivia.txt';
+    if ($match_count == 0) {
+        echo "<h2>No match. Reload.</h2>";
+        file_put_contents($no_value, $random_item . PHP_EOL, FILE_APPEND);
+        reload();
+    }
+    else {
+        if ($is_human == TRUE) {
+            echo "<h2>Random person trivia -- 1 of $match_count:</h2>";
+        }
+        else { # ($is_movie = TRUE)
+            echo "<h2>Random movie trivia -- 1 of $match_count:</h2>";
+        }
     }
 
     # All the matches are stored in an array
@@ -106,7 +134,7 @@
         $statuses = $connection->post("statuses/update", ["status" => $title_match[0] . ": " . $trivia_replace2]);
     }
     else {
-        header("Refresh: 1; URL=$site_url");
+        reload();
     }
 
     # Print the things out
