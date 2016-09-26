@@ -114,7 +114,7 @@
     }
 
     # Get the random trivia from the matches
-    $random_trivia = $matches[0][array_rand($matches[0])];
+    $random_trivia = $matches[0][shuffle($matches[0])];
 
     # Cut unnecessary HTML tags out
     $trivia_replace1 = preg_replace('!<a href=".*">!', "", $random_trivia);
