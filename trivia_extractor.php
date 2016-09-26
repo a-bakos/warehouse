@@ -54,7 +54,7 @@
     # Get a random value from the array with which the url can be built,
     # and trim the whitespaces
     # Example: tt0108778 (in movies.txt), nm0000151 (in names.txt)
-    $random_item = $random_item_array[array_rand($random_item_array)];
+    $random_item = $random_item_array[shuffle($random_item_array)];
     $random_item = trim($random_item);
 
     # Build the url based on which item has been chosen above,
