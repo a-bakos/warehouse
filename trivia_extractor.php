@@ -131,10 +131,15 @@
     $char_length = $trivia_length + $title_length + 1;
 
     # Check if the end value is Twitter-friendly
-    # If yes, then tweet it, if not refresh the page
-    if ($char_length <= 140) {
+    # First, check if the title + trivia is less than 120 chars, if so, append the current URL to it
+    if ($char_length <= 120) {
+        $statuses = $connection->post("statuses/update", ["status" => $title_match[0] . ": " . $trivia_replace2 . $target_url]);
+    }
+    # Second, if the title + trivia is between  120 and 138 chars, tweet without link
+    elseif ($char_length > 120 && $char_length <= 138) {
         $statuses = $connection->post("statuses/update", ["status" => $title_match[0] . ": " . $trivia_replace2]);
     }
+    # Or reload...
     else {
         reload();
     }
