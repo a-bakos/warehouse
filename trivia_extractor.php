@@ -78,12 +78,14 @@
     # If starts with 'nm...' complete the name/bio link
     if (preg_match('!nm.*!', $random_item, $random_name)) {
         $build_url = file_get_contents("http://www.imdb.com/name/$random_name[0]/bio");
+        $target_url = "http://www.imdb.com/name/$random_item/bio";
         preg_match_all('!(?<=(odd">)|(even">)).*(?=<br />)!siU', $build_url, $matches);
         $is_human = TRUE;
     }
     # Otherwise complete the link to the movie's trivia
     else {
         $build_url = file_get_contents("http://www.imdb.com/title/$random_item/trivia");
+        $target_url = "http://www.imdb.com/title/$random_item/trivia";
         preg_match_all('!(?<=sodatext">).*(?=  </div>)!siU', $build_url, $matches);
         $is_movie = TRUE;
     }
@@ -146,4 +148,5 @@
     # trivia:
     echo "<h2>Random trivia:</h2>";
     echo "<p>" . $trivia_replace2 . "</p>";
+    echo "<p>URL in use:" . $target_url . "</p>";
 ?>
