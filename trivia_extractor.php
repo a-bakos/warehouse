@@ -95,8 +95,8 @@
 
     # If no trivia has been found record the ID in a file and refresh the script
     $no_value = 'no_trivia.txt';
-    if ($match_count == 0) {
-        echo "<h2>No match. Reload.</h2>";
+    if ($match_count == 0 || $match_count == NULL) {
+        echo "<h2>No match or NULL value. Reload.</h2>";
         file_put_contents($no_value, $random_item . PHP_EOL, FILE_APPEND);
         reload();
     }
