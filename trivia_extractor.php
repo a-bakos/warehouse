@@ -130,15 +130,26 @@
     $trivia_length = strlen($trivia_replace2);
     $char_length = $trivia_length + $title_length + 1;
 
+    # Hashtags
+    define('MOVIE', '#movie');
+    define('TRIVIA', '#trivia');
+
     # Check if the end value is Twitter-friendly
     # (Twitter URL shortener creates 23 character long addresses)
-    # First, check if the title + trivia is less than 120 chars, if so, append the current URL to it
-    if ($char_length <= 117) {
-        $statuses = $connection->post("statuses/update", ["status" => $title_match[0] . ": " . $trivia_replace2 . $target_url]);
+    # If the title + trivia is less than 101 chars, append two hashtags and the current URL to it
+    if ($char_length <= 101) {
+        $tweet = $title_match[0] . ": " . $trivia_replace2 . " " . MOVIE . " " . TRIVIA . " " . $target_url;
+        $statuses = $connection->post("statuses/update", ["status" => $tweet]);
     }
-    # Second, if the title + trivia is between  120 and 138 chars, tweet without link
+    # If the title + trivia is between  106 and 117 chars, tweet with 1 hashtag and a link
+    elseif ($char_length >= 106 && $char_length <= 117) {
+        $tweet = $title_match[0] . ": " . $trivia_replace2 . " " . TRIVIA . " " . $target_url;
+        $statuses = $connection->post("statuses/update", ["status" => $tweet]);
+    }
+    # If the title + trivia is between  120 and 138 chars, tweet without link and hashtag
     elseif ($char_length >= 118 && $char_length <= 138) {
-        $statuses = $connection->post("statuses/update", ["status" => $title_match[0] . ": " . $trivia_replace2]);
+        $tweet = $title_match[0] . ": " . $trivia_replace2;
+        $statuses = $connection->post("statuses/update", ["status" => $tweet]);
     }
     # Or reload...
     else {
@@ -153,6 +164,7 @@
     echo "<hr />";
     # trivia:
     echo "<h2>Random trivia:</h2>";
+    echo "<h2>This goes on Twitter: " . $tweet . "</h2>";
     echo "<p>" . $trivia_replace2 . "</p>";
     echo "<p>URL in use:" . $target_url . "</p>";
 ?>
