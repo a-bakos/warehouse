@@ -153,6 +153,7 @@
     }
     # Or reload...
     else {
+        $tweet = "Nothin'.";
         reload();
     }
 
