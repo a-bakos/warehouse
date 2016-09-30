@@ -173,5 +173,5 @@
     echo "<h2>Random trivia:</h2>";
     echo "<h2>This goes on Twitter: " . $tweet . "</h2>";
     echo "<p>" . $trivia_replace2 . "</p>";
-    echo "<p>URL in use:" . $target_url . "</p>";
+    echo "<p>URL in use: <a target=\"_blank\" href=\"" . $target_url . "\">" . $target_url . "</a></p>";
 ?>
