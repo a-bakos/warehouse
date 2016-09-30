@@ -147,13 +147,13 @@
         $tweet = $title_match[0] . ": " . $trivia_replace2 . " " . MOVIE . " " . TRIVIA . " " . $target_url;
         $statuses = $connection->post("statuses/update", ["status" => $tweet]);
     }
-    # If the title + trivia is between  106 and 117 chars, tweet with 1 hashtag and a link
-    elseif ($char_length >= 106 && $char_length <= 117) {
+    # If the title + trivia is between  101 and 115 chars, tweet with 1 hashtag and a link
+    elseif ($char_length >= 101 && $char_length <= 115) {
         $tweet = $title_match[0] . ": " . $trivia_replace2 . " " . TRIVIA . " " . $target_url;
         $statuses = $connection->post("statuses/update", ["status" => $tweet]);
     }
     # If the title + trivia is between  120 and 138 chars, tweet without link and hashtag
-    elseif ($char_length >= 118 && $char_length <= 138) {
+    elseif ($char_length >= 116 && $char_length <= 138) {
         $tweet = $title_match[0] . ": " . $trivia_replace2;
         $statuses = $connection->post("statuses/update", ["status" => $tweet]);
     }
