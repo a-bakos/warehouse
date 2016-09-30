@@ -4,13 +4,14 @@
     Trivia Extractor and Tweeter
 
     The script uses external files that contain unique IDs from the IMDB system.
-    For example, every movie and person has a unique ID which can be seen in the url of a given page.
-    A file is picked randomly, so is a single item from that file.
+    Every movie and person has a unique ID which can be seen in the url of a given page.
+    A file is picked randomly, so is a single item (ID) from that file.
     Then the proper url gets created according to that item (a movie's page or a person's bio),
     and the script extracts all of the trivia from the url's source code and stores them in an array.
     Also, searches for the title of the page (a movie title or a person's name).
+
     Checks if the value found is Twitter-friendly or not, and if so, it posts the title and the trivia
-    to Twitter. If it is more than 140 character all together, the script gets reloaded and starts again.
+    to Twitter. Otherwise the script gets reloaded and runs again.
 
     Created by Attila Bakos (abakos.info)
     2016, Plymouth, UK
@@ -136,8 +137,13 @@
 
     # Check if the end value is Twitter-friendly
     # (Twitter URL shortener creates 23 character long addresses)
-    # If the title + trivia is less than 101 chars, append two hashtags and the current URL to it
-    if ($char_length <= 101) {
+    # If less than 15 characters, skip it
+    if ($char_length <= 15) {
+        $tweet = "Too short.";
+        reload();
+    }
+    # Title + trivia more than 15 and less than 101 chars, append two hashtags and the current URL to it
+    elseif ($char_length >= 16 && $char_length <= 101) {
         $tweet = $title_match[0] . ": " . $trivia_replace2 . " " . MOVIE . " " . TRIVIA . " " . $target_url;
         $statuses = $connection->post("statuses/update", ["status" => $tweet]);
     }
