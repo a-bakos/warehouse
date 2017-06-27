@@ -1,0 +1,104 @@
+$color-blue: #5cbee4;
+$color-green: #59CB86;
+
+body { background: black; }
+
+@mixin morphi-fwd {
+  0% {
+    border-radius: 50%;
+    transform: scale(1) rotate(0deg);
+    }
+  10% { border-color: $color-blue; }
+  48% {
+    box-shadow:
+      0 0 10px $color-green,
+      0 0 10px $color-green inset;
+    }
+  50% {
+    opacity: 1;
+    border: 5px solid $color-blue;
+    border-radius: 0;
+    box-shadow:
+      0 0 30px $color-green,
+      0 0 30px $color-green inset;
+    transform: scale(0) rotate(180deg);
+    }
+  58% {
+    box-shadow:
+      0 0 10px $color-green,
+      0 0 10px $color-green inset;
+    }
+  90% { border-color: $color-blue; }
+  100% {
+    border-radius: 50%;
+    transform: scale(1) rotate(360deg);
+    }
+  } // .morphi-fwd
+
+@mixin morphi-rev {
+  0% {
+    border-radius: 50%;
+    transform: scale(0) rotate(0deg);
+    }
+  48% {
+    box-shadow:
+      0 0 10px $color-blue,
+      0 0 10px $color-blue inset;
+    }
+  50% {
+    opacity: 1;
+    border: 5px solid $color-blue;
+    border-radius: 0;
+    box-shadow:
+      0 0 30px $color-blue,
+      0 0 30px $color-blue inset;
+    transform: scale(1) rotate(-180deg);
+    }
+  58% {
+    box-shadow:
+      0 0 10px $color-blue,
+      0 0 10px $color-blue inset;
+    }
+  100% {
+    border-radius: 50%;
+    transform: scale(0) rotate(-360deg);
+    }
+  } // .moprhi-rev
+
+@-webkit-keyframes morph-fwd { @include morphi-fwd; }
+        @keyframes morph-fwd { @include morphi-fwd; }
+
+@-webkit-keyframes morph-rev { @include morphi-rev; }
+        @keyframes morph-rev { @include morphi-rev; }
+
+.morphi-animation {
+  width: 100%;
+  height: 400px;
+  margin: 0 auto;
+
+	 background: rgba(255,255,255,0.15);
+  }
+
+@mixin morph-properties($top, $opacity, $border-color, $ani) {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: auto;
+
+  top: $top;
+  opacity: $opacity;
+  border: 3px solid $border-color;
+  -webkit-animation: $ani 5s linear infinite;
+          animation: $ani 5s linear infinite;
+  }
+
+.morph-fwd {
+  @include morph-properties(25%, 1, $color-blue, morph-fwd);
+  box-shadow:
+    0 0 10px $color-blue,
+    0 0 10px $color-blue inset;
+  }
+
+.morph-rev {
+  @include morph-properties(-25%, 0, $color-green, morph-rev);
+  }
